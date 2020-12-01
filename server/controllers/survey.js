@@ -40,8 +40,11 @@ module.exports.displaySurveyList = (req, res, next) => {
 }
 
 module.exports.displayAddPage = (req, res, next) => {
-    res.render('survey-add', {title: 'Add Survey', 
-    displayName: req.user ? req.user.displayname : ''})          
+    if(req.user){
+        res.render('survey-add', {title: 'Add Survey', 
+    displayName: req.user ? req.user.displayname : ''}) 
+    } 
+             
 }
 
 module.exports.processAddPage = (req, res, next) => {
