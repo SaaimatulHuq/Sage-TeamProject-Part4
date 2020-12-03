@@ -2,12 +2,14 @@
 
 <%- include partials/main_nav.ejs %> 
 
+<%- include partials/loginForm.ejs %>
+
 
 
   <main>
-    <div class="jumbotron">
-      <div class="container">
-        <h1 class="display-10"><%= title %></h1>
+    <div class="shadow-lg" style="background-color: rgb(145, 187, 224); ">
+      <div class="container "  >
+        <h1 class="display-10 " style="text-align: center; padding: 10px; "><%= title %></h1>
       </div>
     </div>
     
@@ -51,7 +53,10 @@
                   <input type="text" class="form-control" id="description" name="description" placeholder="Survey Description" required>
                 </div>
               </div>
-
+              <div class=" w-100">
+                <hr class="solid">
+              </div>
+             <hr class="solid" style="color: black; ">
 
               <div class="w-100">
                 <label class="sr-only" for="enterQuestion1">Enter Question 1?</label>
