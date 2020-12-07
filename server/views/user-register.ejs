@@ -1,8 +1,7 @@
 <%- include ./partials/header.ejs %>  
   
-<%- include ./partials/main_nav.ejs %> 
-
-<%- include ./partials/loginForm.ejs %>
+<%- include ./partials/main_nav.ejs %>  
+<%- include partials/loginForm.ejs %>
 
 <main class="container">
    
@@ -24,28 +23,24 @@
                     name="password" placeholder="Enter password"
                     id="password" required>
                 </fieldset>
-                
                 <fieldset class="form-group">
                     <label for="email">Email: </label>
                     <input type="email" class="form-control"
                     name="email" placeholder="Enter email address"
                     id="email" required>
                 </fieldset>
-
                 <fieldset class="form-group">
                     <label for="displayname">Display Name: </label>
                     <input type="text" class="form-control"
                     name="displayname" placeholder="Enter display name"
                     id="displayname" required>
                 </fieldset>
-
                 <fieldset class="form-group text-right">
                     <input type="submit" class="btn btn-success" value="Register">
                     <a href="/user/register" >
                         <input type="button" class="btn btn-warning" value="Cancel">
                     </a>
                 </fieldset>
-
             </form>
         </div>
     </div>

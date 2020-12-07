@@ -58,7 +58,9 @@ module.exports.processAddPage = (req, res, next) => {
         "description": req.body.description,
         "enterQuestion1": req.body.enterQuestion1,
         "enterQuestion2": req.body.enterQuestion2,
-        "enterQuestion3": req.body.enterQuestion3
+        "enterQuestion3": req.body.enterQuestion3,
+        "start":req.body.start,
+        "end":req.body.end
     });
 
     Survey.create(newSurvey, (err, Survey) =>{
@@ -106,7 +108,9 @@ module.exports.processEditPage = (req, res, next) => {
         "description": req.body.description,
         "enterQuestion1": req.body.enterQuestion1,
         "enterQuestion2": req.body.enterQuestion2,
-        "enterQuestion3": req.body.enterQuestion3
+        "enterQuestion3": req.body.enterQuestion3,
+        "start":req.body.start,
+        "end":req.body.end
     });
 
     Survey.updateOne({_id: id}, updatedSurvey, (err) => {

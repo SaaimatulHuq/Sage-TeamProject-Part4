@@ -6,64 +6,128 @@ FileName : app.js
 
 */
 
-let createError = require('http-errors');
-let express = require('express');
-let path = require('path');
-let cookieParser = require('cookie-parser');
-let logger = require('morgan');
-
+let createError = require("http-errors");
+let express = require("express");
+let path = require("path");
+let cookieParser = require("cookie-parser");
+let logger = require("morgan");
 
 // modules for authentication
-let session = require('express-session');
-let passport = require('passport');
+let session = require("express-session");
+let passport = require("passport");
 
 // let passportJWT = require('passport-jwt');
 // let JWTStrategy = passportJWT.Strategy;
 // let ExtractJWT = passportJWT.ExtractJwt;
 
-let passportLocal = require('passport-local');
+let passportLocal = require("passport-local");
 let localStrategy = passportLocal.Strategy;
-let flash = require('connect-flash');
+let flash = require("connect-flash");
 
 //database setup
 
-let mongoose = require('mongoose');
-let DB = require('./db');
+let mongoose = require("mongoose");
+let DB = require("./db");
 
 //point mongoose
-mongoose.connect(DB.URI, { useNewUrlParser: true , useUnifiedTopology: true });
+mongoose.connect(DB.URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let mongoDB = mongoose.connection;
-mongoDB.on('error', console.error.bind(console,'Connection Error:'));
-mongoDB.once('open', ()=>{
-  console.log('Connected to MongoDB...');
+mongoDB.on("error", console.error.bind(console, "Connection Error:"));
+mongoDB.once("open", () => {
+  console.log("Connected to MongoDB...");
 });
 
-let indexRouter = require('../routes/index');
-let surveyRouter = require('../routes/survey');
-let userRouter = require('../routes/user');
-
+let indexRouter = require("../routes/index");
+let surveyRouter = require("../routes/survey");
+let userRouter = require("../routes/user");
 
 let app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, '../views'));
-app.set('view engine', 'ejs');
+//helper function for survey-list.ejs
+app.locals.getStartTime = (time) => {
+  // Get today's date and time
+  var now = new Date().getTime();
 
-app.use(logger('dev'));
+  // Find the distance between now and the count down date
+  var distance = time - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  if (distance > 0) {
+    return (
+      "Will start in " +
+      days +
+      "d " +
+      hours +
+      "h " +
+      minutes +
+      "m " 
+      // +
+      // seconds +
+      // "s "
+    );
+  } else {
+    return "Has started";
+  }
+};
+
+app.locals.getEndTime = (time) => {
+  // Get today's date and time
+  var now = new Date().getTime();
+
+  // Find the distance between now and the count down date
+  var distance = time - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // Display the result in the element with id="demo"
+  if (distance > 0) {
+    return (
+      "Will end in " +
+      days +
+      "d " +
+      hours +
+      "h " +
+      minutes +
+      "m " 
+      // +
+      // seconds +
+      // "s "
+    );
+  } else {
+    return "Has ended";
+  }
+};
+
+// view engine setup
+app.set("views", path.join(__dirname, "../views"));
+app.set("view engine", "ejs");
+
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../../public')));
-app.use(express.static(path.join(__dirname,'../../node_modules')));
-
+app.use(express.static(path.join(__dirname, "../../public")));
+app.use(express.static(path.join(__dirname, "../../node_modules")));
 
 //setup express session
-app.use(session({
-  secret: "SomeSecret",
-  saveUninitialized: false,
-  resave: false
-}));
+app.use(
+  session({
+    secret: "SomeSecret",
+    saveUninitialized: false,
+    resave: false,
+  })
+);
 
 // initialize flash
 app.use(flash());
@@ -75,11 +139,11 @@ app.use(passport.session());
 // passport user configuration
 
 // create a User Model Instance
-let surveyModel = require('../models/survey');
+let surveyModel = require("../models/survey");
 let Survey = surveyModel.Survey;
 
 //create a User Model Instance
-let userModel = require('../models/user');
+let userModel = require("../models/user");
 let User = userModel.User;
 
 // implement a User Authentication Strategy
@@ -89,27 +153,24 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
-
-app.use('/', indexRouter);
-app.use('/survey-list',surveyRouter);
-app.use('/user', userRouter);
-
+app.use("/", indexRouter);
+app.use("/survey-list", surveyRouter);
+app.use("/user", userRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', { title: 'Error' });
+  res.render("error", { title: "Error" });
 });
 
 module.exports = app;
